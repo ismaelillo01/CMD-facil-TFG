@@ -17,14 +17,15 @@ Este manual de usuario proporciona instrucciones detalladas sobre el uso de **TF
 ## 3. Instalación
 1. Descarga el archivo del script principal.
 2. Asegúrate de tener **Python** instalado en tu sistema.
-3. Instala las dependencias necesarias ejecutando:
+3. Instala las dependencias necesarias ejecutando en la terminal:
    ```bash
    pip install requests
    ```
    ```bash
    pip install dotenv
    ```
-   5. Ejecuta el script desde la terminal con:
+
+4. Ejecuta el script desde la terminal con:
    ```bash
    python CMD_facil.py
    ```
