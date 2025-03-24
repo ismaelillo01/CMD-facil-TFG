@@ -21,7 +21,10 @@ Este manual de usuario proporciona instrucciones detalladas sobre el uso de **TF
    ```bash
    pip install requests
    ```
-4. Ejecuta el script desde la terminal con:
+   ```bash
+   pip install dotenv
+   ```
+   5. Ejecuta el script desde la terminal con:
    ```bash
    python CMD_facil.py
    ```
