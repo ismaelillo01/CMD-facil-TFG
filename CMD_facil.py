@@ -18,7 +18,7 @@ GEMINI_API_URL = os.getenv("GEMINI_API_URL")
 def guardar_historial(historial):
     """Guarda el historial de operaciones en un archivo JSON."""
     with open(HISTORIAL_RENOMBRADO, "w", encoding="utf-8") as f:
-        json.dump(historial, f, indent=4)
+        json.dump(historial, f, indent=4, ensure_ascii=False)
 
 def cargar_historial():
     """Carga el historial de operaciones desde un archivo JSON."""
@@ -27,10 +27,10 @@ def cargar_historial():
             return json.load(f)
     return {}
 
-def extraer_numero(nombre):
-    """Extrae el primer número encontrado en el nombre del archivo."""
-    match = re.search(r'\d+', nombre)
-    return int(match.group()) if match else float('inf')
+def extraer_numero(texto):
+    # Busca el primer número en el texto (soporta "Capitulo 10" o "Capítulo 10")
+    match = re.search(r'\d+', texto)
+    return int(match.group()) if match else float('inf')  # 'inf' al final si no encuentra número
 
 def seleccionar_archivos(directorio):
     """Permite seleccionar archivos específicos o todos los archivos en un directorio."""
@@ -205,41 +205,6 @@ def eliminar_duplicados(directorio):
         guardar_historial(historial)
         print("Operación de eliminación registrada en el historial.")
 
-def seleccionar_carpetas(directorio):
-    """Permite seleccionar carpetas específicas o todas en un directorio."""
-    carpetas = [f for f in os.listdir(directorio) if os.path.isdir(os.path.join(directorio, f))]
-    if not carpetas:
-        print("No hay carpetas en el directorio.")
-        return []
-
-    print("\nCarpetas disponibles:")
-    for i, carpeta in enumerate(carpetas, 1):
-        print(f"{i}. {carpeta}")
-
-    seleccion = input("Introduce los números de las carpetas separadas por comas, o * para todas: ")
-
-    if seleccion.strip() == "*":
-        seleccionadas = carpetas
-    else:
-        try:
-            indices = [int(i) - 1 for i in seleccion.split(",")]
-            seleccionadas = [carpetas[i] for i in indices if 0 <= i < len(carpetas)]
-        except ValueError:
-            print("Selección inválida.")
-            return []
-
-    # Ordenar por número extraído del nombre
-    seleccionadas.sort(key=lambda x: (extraer_numero(x), x.lower()))
-
-    return seleccionadas
-
-def seleccionar_carpetas(directorio):
-    """Devuelve una lista con los nombres de las subcarpetas dentro del directorio dado."""
-    try:
-        return [nombre for nombre in os.listdir(directorio) if os.path.isdir(os.path.join(directorio, nombre))]
-    except FileNotFoundError:
-        print("El directorio no existe.")
-        return []
 
 def cargar_historial():
     """Carga el historial desde un archivo JSON si existe, sino devuelve un diccionario vacío."""
@@ -248,10 +213,6 @@ def cargar_historial():
             return json.load(f)
     return {}
 
-def guardar_historial(historial):
-    """Guarda el historial en un archivo JSON."""
-    with open("historial.json", "w", encoding="utf-8") as f:
-        json.dump(historial, f, indent=4, ensure_ascii=False)
 
 def seleccionar_carpetas(directorio):
     """Muestra las subcarpetas y permite seleccionar cuáles renombrar."""
@@ -281,28 +242,18 @@ def seleccionar_carpetas(directorio):
         print("El directorio no existe.")
         return []
 
-def cargar_historial():
-    """Carga el historial desde un archivo JSON si existe, sino devuelve un diccionario vacío."""
-    if os.path.exists("historial.json"):
-        with open("historial.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {}
-
-def guardar_historial(historial):
-    """Guarda el historial en un archivo JSON."""
-    with open("historial.json", "w", encoding="utf-8") as f:
-        json.dump(historial, f, indent=4, ensure_ascii=False)
 
 def renombrar_carpetas(directorio, prefijo):
     carpetas = seleccionar_carpetas(directorio)
+    carpetas.sort(key=lambda nombre: int(re.search(r'\d+', nombre).group()) if re.search(r'\d+', nombre) else float('inf'))
     if not carpetas:
         return
 
     usar_numeracion = input("¿Quieres añadir numeración automática al nombre? (s/n): ").strip().lower()
     if usar_numeracion == "s":
-        try:
-            inicio = int(input("Número inicial (ejemplo: 001): "))
+        try: 
             ancho = len(input("Formato de números (ejemplo: 001 → 3 dígitos): ").strip())  
+            inicio = int(input("Número inicial (ejemplo: 001): "))           
             incremento = int(input("Incremento entre carpetas: "))
         except ValueError:
             print("Entrada inválida.")
