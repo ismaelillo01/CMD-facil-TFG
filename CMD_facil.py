@@ -28,7 +28,7 @@ def cargar_historial():
     return {}
 
 def extraer_numero(texto):
-    # Busca el primer número en el texto (soporta "Capitulo 10" o "Capítulo 10")
+    # Busca el primer número en el texto 
     match = re.search(r'\d+', texto)
     return int(match.group()) if match else float('inf')  # 'inf' al final si no encuentra número
 
@@ -361,9 +361,7 @@ def deshacer_ultima_operacion():
     elif ultima_operacion["tipo"] == "eliminar":
         # Restaurar los archivos eliminados
         for archivo in ultima_operacion["archivos"]:
-            # Supongamos que los archivos eliminados fueron registrados; se debe restaurar
             print(f"Restaurar manualmente si es necesario: {archivo}")
-            # Aquí puedes integrar una lógica para restaurar desde backups si existe.
 
     guardar_historial(historial)
     print("Deshacer completado.")
@@ -478,8 +476,8 @@ if __name__ == "__main__":
         print("6. Ejecutar comandos personalizados (lenguaje natural)")
         print("7. Renombrar carpetas")
         print("8. Comprimir subcarpetas a .rar")
-        print("9. Comprimir subcarpetas a .cbz")  # ✅ Cambiado aquí
-        print("10. Salir")  # ✅ Ahora esta es la opción para salir
+        print("9. Comprimir subcarpetas a .cbz")  
+        print("10. Salir")  
 
         opcion = input("Elige una opción: ")
 
